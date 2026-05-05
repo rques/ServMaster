@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServMaster - Painel do Técnico</title>
+    <link rel="stylesheet" href="./painel-tecnico.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="../img/logo-sem_fundo.png" alt="Logo" onerror="this.src='https://via.placeholder.com/70x70?text=SM'">
+            <h2>ServMaster</h2>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" id="nav-lista">
+                    <i class="fa-regular fa-clipboard"></i> Chamados
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" id="nav-novo">
+                    <i class="fa-solid fa-plus"></i> Novo Chamado
+                </a>
+            </li>
+        </ul>
+
+        <div class="profile-section">
+            <p class="profile-role">TÉCNICO</p>
+            <p class="profile-id" id="user-display">Carregando...</p>
+            <button class="btn-logout" id="btn-sair">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <!-- TELA 1: LISTA DE CHAMADOS -->
+        <div id="view-lista">
+            <div class="header-section">
+                <h1>Lista de Chamados</h1>
+                <span class="badge-total" id="badge-total-element">PENDENTES: 0</span>
+            </div>
+            <div class="chamados-list"></div>
+        </div>
+
+        <!-- TELA 2: NOVA REQUISIÇÃO -->
+        <div id="view-novo" style="display: none;">
+            <div class="header-section">
+                <h1>Abertura de Requisição</h1>
+            </div>
+
+            <div class="form-container">
+                <form id="form-novo-chamado">
+                    <div class="form-layout-split">
+                        <div class="form-left">
+                            <div class="form-group">
+                                <label for="requisitante" class="form-label">REQUISITANTE:</label>
+                                <input type="text" id="requisitante" class="form-input" placeholder="Digite o nome do requisitante" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group half-width">
+                                    <label for="centro-custo" class="form-label">Setor:</label>
+                                    <input type="text" id="centro-custo" class="form-input" placeholder="Ex: Comercial" required>
+                                </div>
+
+                                <div class="form-group half-width">
+                                  <label for="tipo-tecnico" class="form-label">TIPO DE SERVIÇO / ÁREA:</label>
+                                    <select id="tipo-tecnico" class="form-select" required>
+                                      <option value="" disabled selected>Selecione a área...</option>
+                                      
+                                      <!-- Área Operacional -->
+                                      <option value="producao">Maquinário de Produção (Fornos, injetoras, esteiras e tornos)</option>
+                                      
+                                      <!-- Estruturas e Infraestrutura Administrativa -->
+                                      <option value="predial">Manutenção Predial (Paredes, portas, pisos)</option>
+                                      <option value="eletrica">Elétrica (Iluminação, tomadas, quadros)</option>
+                                      <option value="hidraulica">Hidráulica (Banheiros, copas, vazamentos)</option>
+    
+                                      <!-- Móveis e Equipamentos -->
+                                      <option value="moveis">Reparo de Móveis (Cadeiras, mesas, armários)</option>
+                                      <option value="equipamentos">Equipamentos (Ar-condicionado, cafeteiras, bebedouros)</option>
+    
+                                      <!-- Apoio e Outros Serviços -->
+                                      <option value="ti">Suporte TI (Computadores, redes, impressoras)</option>
+                                      <option value="servicos_gerais">Serviços Gerais (Mudança de layout, transporte)</option>
+                                      <option value="limpeza">Limpeza / Higienização</option>
+                                      <option value="limpeza">Outros</option>
+                                      
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row three-cols">
+                                <div class="form-group">
+                                    <label for="urgencia" class="form-label">URGÊNCIA:</label>
+                                    <select id="urgencia" class="form-select" required>
+                                        <option value="" disabled selected>Selecione...</option>
+                                        <option value="baixa">Baixa</option>
+                                        <option value="media">Média</option>
+                                        <option value="alta">Alta</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="local" class="form-label">LOCAL:</label>
+                                    <input type="text" id="local" class="form-input" placeholder="Ex: Sala 204" required>
+                                </div>
+
+                            </div>
+                        </div> 
+                        <div class="form-right">
+                            <div class="form-group h-100">
+                                <label for="descricao" class="form-label">DESCRIÇÃO:</label>
+                                <textarea id="descricao" class="form-textarea h-100-textarea" placeholder="Descreva o problema com o máximo de detalhes possível..." required></textarea>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="btn-cancelar-novo">Cancelar</button>
+                        <button type="submit" class="btn-submit" id="btn-enviar-chamado">Abrir Chamado</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts principais e o gerador do Modal -->
+
+    <script src="./painel_tecnico.js"></script>
+    <script src="../modal/modal.js"></script>
+</body>
+</html>

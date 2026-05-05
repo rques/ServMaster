@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Planejador - ServMaster</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="./tela-planejador.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="../img/logo-sem_fundo.png" alt="Logo ServMaster" onerror="this.src='https://via.placeholder.com/70x70?text=SM'">
+            <h2>ServMaster</h2>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" data-target="painel">
+                    <i class="ph ph-squares-four"></i>
+                    <span>Painel Principal</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-target="gestao">
+                    <i class="ph ph-clipboard-text"></i>
+                    <span>Gestão de Manutenção</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-target="equipe">
+                    <i class="ph ph-users"></i>
+                    <span>Equipe Técnica</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-target="relatorios">
+                    <i class="ph ph-chart-line-up"></i>
+                    <span>Relatórios</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="profile-section">
+            <p class="profile-role">Planejador de Manutenção</p>
+            <p class="profile-id">Aline Marques</p>
+            <a href="../index.html">
+                <button class="btn-logout">
+                    <i class="ph ph-sign-out"></i> Sair do Sistema
+                </button>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <section id="sec-painel" class="page-section active">
+            <div class="header-section">
+                <h1>Painel de Solicitações</h1>
+                <span class="badge-total" id="badge-painel">0 Chamados Abertos</span>
+            </div>
+            <div class="chamados-list" id="lista-painel"></div>
+        </section>
+
+        <section id="sec-gestao" class="page-section">
+            <div class="header-section">
+                <h1>Gestão de Manutenção</h1>
+                <span class="badge-total">Atribuição de Tarefas</span>
+            </div>
+            <div class="card-container">
+<table class="table-custom">
+    <thead>
+        <tr>
+            <th>Chamado</th>
+            <th>Status</th>
+            <th>Responsável Atual</th>
+            <th>Laudo Técnico</th> <!-- NOVA COLUNA ADICIONADA -->
+            <th>Atribuir Para</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody id="lista-gestao"></tbody>
+</table>
+            </div>
+        </section>
+
+        <section id="sec-equipe" class="page-section">
+            <div class="header-section">
+                <h1>Equipe Técnica</h1>
+                <span class="badge-total">Desempenho e Alocações</span>
+            </div>
+            <div class="equipe-grid" id="lista-equipe"></div>
+        </section>
+
+        <section id="sec-relatorios" class="page-section">
+            <div class="header-section" style="justify-content: space-between; flex-wrap: wrap;">
+                <div>
+                    <h1>Relatórios Gerais</h1>
+                    <span class="badge-total">Visão Estratégica</span>
+                </div>
+                
+                <!-- NOVOS FILTROS DE DATA -->
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                    <select id="filtro-mes" class="form-select" style="padding: 8px 12px; font-size: 13px; width: auto; border-radius: 8px;">
+                        <option value="">Todos os Meses</option>
+                        <option value="01">Janeiro</option>
+                        <option value="02">Fevereiro</option>
+                        <option value="03">Março</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Maio</option>
+                        <option value="06">Junho</option>
+                        <option value="07">Julho</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                    <input type="number" id="filtro-dia" class="form-input" placeholder="Dia (ex: 15)" min="1" max="31" style="padding: 8px 12px; font-size: 13px; width: 110px; border-radius: 8px;">
+                </div>
+            </div>
+            <div class="relatorios-grid">
+                <div class="relatorio-card">
+                    <h3>Status dos Chamados</h3>
+                    <canvas id="graficoStatus"></canvas>
+                </div>
+                <div class="relatorio-card">
+                    <h3>Carga de Trabalho por Técnico</h3>
+                    <canvas id="graficoEquipe"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+
+    <script src="./tela-planejador.js"></script>
+    <script src="../modal/modal.js"></script>
+</body>
+</html>

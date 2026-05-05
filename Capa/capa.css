@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #ffffff;
+    /* Restaurado o fundo original com gradientes */
+    background-image: 
+       radial-gradient(circle at bottom left, rgba(243, 138, 73, 0.4) 0%, transparent 70%),
+        radial-gradient(circle at top right, rgba(231, 199, 80, 0.4) 0%, transparent 70%);
+    font-family: 'Montserrat', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; 
+    overflow: hidden; 
+}
+
+/* =========================================
+   CARTÃO CENTRAL
+   ========================================= */
+.login-card {
+    background: #ffffff;
+    border-radius: 50px;
+    padding: 50px 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+    text-align: center;
+    width: 100%;
+    max-width: 420px; 
+    z-index: 2;
+}
+
+.logo-wrapper {
+    background-color: #FFF9EB; 
+    border-radius: 25px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 230px;
+    height: 230px;
+    margin-bottom: 25px;
+}
+
+.logo {
+    width: 100%;
+    height: auto;
+}
+
+.title {
+    color: #632314; /* Marrom da imagem */
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+}
+
+.title .dot { color: #E68B5C; }
+
+.subtitle {
+    color: #A0A0A0; 
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 35px;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 18px;
+    border-radius: 18px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-outline {
+    background-color: #ffffff;
+    color: #333333; 
+    border: 1.5px solid #F0F0F0; 
+}
+
+.btn-outline i { color: #E68B5C; font-size: 18px; }
+.btn-outline:hover { border-color: #E68B5C; background-color: #FFF9F6; }
+
+.btn-solid {
+    background-color: #E68B5C; 
+    color: #ffffff; 
+    border: none;
+}
+.btn-solid:hover { background-color: #D67A49; transform: translateY(-2px); }
+
+/* =========================================
+   BOTÃO FLUTUANTE E MODAL DE SUPORTE
+   ========================================= */
+.btn-suporte-flutuante { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background-color: #CA4F54; color: #FFFFFF; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(202, 79, 84, 0.4); transition: transform 0.2s, background-color 0.2s; z-index: 998; display: flex; align-items: center; justify-content: center; }
+.btn-suporte-flutuante:hover { transform: scale(1.1); background-color: #983236; }
+.suporte-modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 999; backdrop-filter: blur(3px); }
+.suporte-modal-content { background-color: #FFFFFF; border-radius: 20px; padding: 35px; width: 90%; max-width: 450px; position: relative; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); animation: slideUpFade 0.3s ease-out forwards; font-family: 'Montserrat', Arial, sans-serif; }
+@keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.suporte-fechar { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 20px; color: #A0A0A0; cursor: pointer; transition: color 0.2s; }
+.suporte-fechar:hover { color: #CA4F54; }
+.suporte-modal-content .form-select, .suporte-modal-content .form-textarea { width: 100%; padding: 14px 18px; border: 1.5px solid #F0F0F0; border-radius: 12px; font-size: 14px; font-family: 'Montserrat', sans-serif; color: #333; outline: none; background-color: #FAFAFA; }
+.suporte-modal-content .form-select:focus, .suporte-modal-content .form-textarea:focus { border-color: #E68B5C; background-color: #FFFFFF; }
+.suporte-modal-content .btn-submit { background-color: #E68B5C; color: #FFFFFF; border: none; padding: 12px 30px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: transform 0.2s, background-color 0.2s; }
+.suporte-modal-content .btn-submit:hover { background-color: #D67A49; transform: translateY(-2px); }
+
+
+/* =========================================
+   GERIR ACESSOS
+   ========================================= */
+/* Estilo da Linha Divisória */
+.divider {
+    border: none;
+    border-top: 1px solid #f0f0f0;
+    margin: 10px 0;
+    width: 100%;
+}
+
+/* Botão Gerir Acessos (Escuro) */
+.btn-dark {
+    background-color: #1A2533; /* Tom azul marinho escuro */
+    color: #ffffff;
+    border: none;
+    border-radius: 50px; /* Bordas totalmente arredondadas */
+    padding: 16px;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-dark:hover {
+    background-color: #0f1721;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn-dark i {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+/* Ajuste de responsividade para o novo botão */
+@media (max-width: 480px) {
+    .btn-dark {
+        padding: 14px;
+        font-size: 14px;
+    }
+}
+/* =========================================
+   RESPONSIVIDADE
+   ========================================= */
+
+/* Dispositivos Móveis (até 480px) */
+@media (max-width: 480px) {
+    body { overflow-y: auto; }
+    .login-card { 
+        margin: 20px; 
+        padding: 40px 25px; 
+        border-radius: 35px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .title { font-size: 26px; }
+    .logo-wrapper { width: 100px; height: 100px; margin-bottom: 20px; }
+    .btn { padding: 15px; font-size: 14px; border-radius: 15px; }
+    .btn-suporte-flutuante { width: 50px; height: 50px; bottom: 20px; right: 20px; }
+}
+
+/* Monitores Grandes (1440px ou mais) */
+@media (min-width: 1440px) {
+    .login-card { 
+        max-width: 480px; 
+        padding: 70px 60px; 
+    }
+    .title { font-size: 38px; }
+    .subtitle { font-size: 16px; margin-bottom: 45px; }
+    .btn { padding: 22px; font-size: 18px; border-radius: 22px; }
+    .logo-wrapper { width: 140px; height: 140px; }
+}

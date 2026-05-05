@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServMaster - Acesso Restrito</title>
+    <link rel="stylesheet" href="./acessos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <main class="login-card">
+        <div class="back-navigation">
+            <a href="../index.html" class="btn-back" title="Voltar">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+        </div>
+
+        <div class="icon-wrapper">
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        
+        <h1 class="title">Acesso Restrito</h1>
+        <p class="subtitle">Portal de Gestão de Utilizadores</p>
+
+        <form id="form-gestao">
+            <div class="form-group">
+                <label class="form-label" for="matricula">MATRÍCULA</label>
+                <div class="input-container">
+                    <i class="fa-regular fa-user"></i>
+                    <input type="text" id="matricula" name="matricula" placeholder="admin" autocomplete="off" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="senha">SENHA</label>
+                <div class="input-container">
+                    <i class="fa-solid fa-key"></i>
+                    <input type="password" id="senha" name="senha" placeholder="••••" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-submit">Entrar na Gestão</button>
+        </form>
+    </main>
+
+    <!-- Scripts principais e o gerador do Modal -->
+    <script src="./acessos.js"></script>
+    <script src="../modal/modal.js"></script>
+</body>
+</html>

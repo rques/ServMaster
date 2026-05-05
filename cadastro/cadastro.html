@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServMaster - Gestão de Equipe</title>
+    <link rel="stylesheet" href="./cadastro.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <main class="admin-container">
+        <div class="admin-header">
+            <a href="../index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Voltar ao Início
+            </a>
+            <div class="title-area">
+                <div class="logo-wrapper">
+                    <img src="../img/logo-sem_fundo.png" alt="Logo ServMaster" class="logo" onerror="this.src='https://via.placeholder.com/70x70?text=SM'">
+                </div>
+                <div>
+                    <h1 class="title">Gestão de Equipe</h1>
+                    <p class="subtitle">Cadastro e gerenciamento dos técnicos e planejadores do ServMaster</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            <!-- COLUNA ESQUERDA: FORMULÁRIO -->
+            <section class="form-section">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-user-plus"></i> Novo Cadastro</h2>
+                </div>
+                <form id="cadastro-form">
+                    <div class="input-group">
+                        <label for="nome">NOME COMPLETO</label>
+                        <input type="text" id="nome" name="nome" placeholder="Ex: Carlos Silva" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group half">
+                            <label for="matricula">MATRÍCULA</label>
+                            <input type="text" id="matricula" name="matricula" placeholder="Apenas números" autocomplete="off" required>
+                            <span class="error-message" id="error-msg">Mínimo 4 dígitos numéricos.</span>
+                        </div>
+
+                        <div class="input-group half">
+                            <label for="cargo">FUNÇÃO</label>
+                            <select id="cargo" name="cargo" class="form-select-main" required>
+                                <option value="" disabled selected>Selecione...</option>
+                                <option value="tecnico">Técnico de Manutenção</option>
+                                <option value="planejador">Planejador</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="senha">SENHA DE ACESSO</label>
+                        <input type="password" id="senha" name="senha" placeholder="Defina a senha inicial" required>
+                    </div>
+
+                    <button type="submit" class="btn-solid" id="submit-btn">Cadastrar Usuário</button>
+                </form>
+            </section>
+
+            <!-- COLUNA DIREITA: LISTA E EXCLUSÃO -->
+            <section class="list-section">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-users"></i> Equipe Cadastrada</h2>
+                    <span class="badge" id="total-users">0</span>
+                </div>
+                <div class="users-container" id="lista-usuarios">
+                    <!-- Os usuários aparecerão aqui via JavaScript -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts principais -->
+    <script src="./cadastro.js"></script>
+</body>
+</html>

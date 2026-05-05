@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServMaster - Acesso</title>
+    <link rel="stylesheet" href="./Capa/capa.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <main class="login-card">
+        <div class="logo-wrapper">
+            <img src="./img/logo-sem_fundo.png" alt="Logo ServMaster" class="logo" onerror="this.src='https://via.placeholder.com/70x70?text=SM'">
+        </div>
+        
+        <h1 class="title">SERV<span class="dot">.</span>MASTER</h1>
+        <p class="subtitle">Selecione o seu painel de acesso</p>
+ 
+        <div class="buttons-container">
+            <a href="./colaborador/colaborador.html" class="btn btn-outline">
+                <i class="fa-regular fa-user"></i> Painel Colaborador
+            </a>
+            
+            <a href="./tecnico/tecnico.html" class="btn btn-outline">
+                <i class="fa-solid fa-wrench"></i> Painel Técnico
+            </a>
+
+            <a href="./planejador/planejador.html" class="btn btn-solid">
+                <i class="fa-solid fa-layer-group"></i> Painel Planejador
+            </a>
+            
+            <hr class="divider">
+
+            <a href="./acessos/acessos.html" class="btn btn-dark">
+                <i class="fa-regular fa-shield-check"></i> Gerir Acessos
+            </a>
+        </div>
+    </main>
+
+    <!-- Scripts principais e o gerador do Modal -->
+    <script src="./js/capa.js"></script>
+    <script src="./modal/modal.js"></script> 
+</body>
+</html>

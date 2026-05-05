@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServMaster - Login Planejador</title>
+    <link rel="stylesheet" href="./planejador.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <main class="login-card">
+        <a href="../index.html" class="back-link">
+            <i class="fa-solid fa-angle-left"></i> VOLTAR
+        </a>
+        
+        <div class="logo-wrapper">
+            <img src="../img/logo-sem_fundo.png" alt="Logo ServMaster" class="logo" onerror="this.src='https://via.placeholder.com/70x70?text=SM'">
+        </div>
+        
+        <h1 class="title">Login Planejador</h1>
+        <p class="subtitle">Aceda à sua conta corporativa</p>
+
+        <form id="login-form">
+            <div class="input-group">
+                <label for="matricula">MATRÍCULA</label>
+                <input type="text" id="matricula" name="matricula" placeholder="Digite sua matrícula" autocomplete="off" required>
+                <span class="error-message" id="error-msg" style="display: none;">Matrícula inválida. Use apenas números.</span>
+            </div>
+            
+            <div class="input-group">
+                <label for="senha">SENHA</label>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+            </div>
+
+            <button type="submit" class="btn-solid" id="submit-btn">Entrar Agora</button>
+        </form>
+    </main>
+
+    <!-- Scripts principais e o gerador do Modal -->
+    
+    <script src="../modal/modal.js"></script>
+    <script src="./planejador.js"></script>
+</body>
+</html>
