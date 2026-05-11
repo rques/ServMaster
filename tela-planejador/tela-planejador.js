@@ -1,37 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // ==========================================
-    // GESTÃO DE SESSÃO DO PLANEJADOR
+    // SESSÃO E BANCO DE DADOS
     // ==========================================
     const displayNome = document.getElementById("nome-planejador-display");
-    
-    // Puxa o nome salvo no login (ajuste a chave "nomePlanejador" para a que você usa no seu script de login)
     const nomePlanejador = sessionStorage.getItem("nomePlanejador"); 
+    if (displayNome) displayNome.textContent = nomePlanejador || "Planejador Logado";
 
-    if (displayNome) {
-        if (nomePlanejador) {
-            displayNome.textContent = nomePlanejador;
-        } else {
-            displayNome.textContent = "Planejador Logado"; // Nome genérico caso dê erro no login
-        }
-    }
-
-    // Lógica para o botão de sair (se ainda não tiver)
-    const btnSair = document.querySelector(".btn-logout");
-    if (btnSair) {
-        btnSair.addEventListener("click", (e) => {
-            // Opcional: e.preventDefault() se quiser tratar o redirecionamento via JS em vez do href do <a>
-            sessionStorage.clear();
-        });
-    }
-
-    // ... (o resto do seu código de banco de dados, filtros e renderização continua aqui para baixo) ...document.addEventListener('DOMContentLoaded', () => {
-    
-
-    
-    // ==========================================
-    // 1. BANCO DE DADOS E ESTADOS
-    // ==========================================
     const getChamados = () => JSON.parse(localStorage.getItem('chamados')) || [];
     const saveChamados = (chamados) => localStorage.setItem('chamados', JSON.stringify(chamados));
     const equipe = JSON.parse(localStorage.getItem('equipe_servmaster')) || [];
@@ -40,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let chartEquipe = null;
 
     // ==========================================
-    // 2. NAVEGAÇÃO ENTRE TELAS (SPA)
+    // NAVEGAÇÃO SPA
     // ==========================================
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.page-section');
@@ -48,101 +23,38 @@ document.addEventListener('DOMContentLoaded', () => {
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            // Remove a classe active de todos
             navLinks.forEach(l => l.classList.remove('active'));
             sections.forEach(s => s.classList.remove('active'));
             
-            // Adiciona a classe active no clicado
             link.classList.add('active');
             const targetId = link.getAttribute('data-target');
             document.getElementById(`sec-${targetId}`).classList.add('active');
 
-            // Renderiza a tela correspondente
-            if(targetId === 'painel') renderPainel();
             if(targetId === 'gestao') renderGestao();
             if(targetId === 'equipe') renderEquipe();
             if(targetId === 'relatorios') renderRelatorios();
+            if(targetId === 'historico') renderHistorico();
         });
     });
 
     // ==========================================
-    // 3. EXCLUSÃO DE CHAMADOS GLOBAL
+    // EXCLUSÃO
     // ==========================================
     window.excluirChamado = function(id) {
-        if (confirm('Tem certeza que deseja excluir esta requisição permanentemente?')) {
+        if (confirm('Deseja excluir esta requisição permanentemente?')) {
             const chamados = getChamados();
-            const novaLista = chamados.filter(c => String(c.id) !== String(id));
-            saveChamados(novaLista);
+            saveChamados(chamados.filter(c => String(c.id) !== String(id)));
             
-            // Atualiza a tela que estiver aberta no momento
             const activeSection = document.querySelector('.page-section.active')?.id;
-            if (activeSection === 'sec-painel') renderPainel();
             if (activeSection === 'sec-gestao') renderGestao();
             if (activeSection === 'sec-equipe') renderEquipe();
             if (activeSection === 'sec-relatorios') renderRelatorios();
+            if (activeSection === 'sec-historico') renderHistorico();
         }
     };
 
     // ==========================================
-    // 4. FILTROS DE DATA
-    // ==========================================
-    const filtroMes = document.getElementById('filtro-mes');
-    const filtroDia = document.getElementById('filtro-dia');
-    
-    if(filtroMes) filtroMes.addEventListener('change', renderRelatorios);
-    if(filtroDia) filtroDia.addEventListener('input', renderRelatorios);
-
-    // ==========================================
-    // 5. RENDERIZAÇÃO: PAINEL PRINCIPAL
-    // ==========================================
-    function renderPainel() {
-        const listaPainel = document.getElementById('lista-painel');
-        const badgePainel = document.getElementById('badge-painel');
-        if (!listaPainel) return;
-        
-        listaPainel.innerHTML = '';
-        const chamados = getChamados();
-        let abertos = 0;
-
-        if (chamados.length === 0) {
-            listaPainel.innerHTML = '<p style="color: #A0A0A0; font-weight: 500; text-align: center; padding: 20px;">Nenhum chamado registrado no momento.</p>';
-        }
-
-        chamados.slice().reverse().forEach(chamado => {
-            if(chamado.status === 'aberto' || chamado.status === 'pendente') abertos++;
-
-            const tituloFormatado = chamado.tipoServico ? `${chamado.tipoServico.toUpperCase()} - ${chamado.local}` : `Chamado #${chamado.id.substring(0,6)}`;
-            const responsavelNome = chamado.responsavelId 
-                ? equipe.find(e => e.id === Number(chamado.responsavelId))?.nome || 'Não atribuído'
-                : 'Não atribuído';
-
-            const card = document.createElement('div');
-            card.className = 'chamado-card';
-            card.innerHTML = `
-                <div class="chamado-info">
-                    <h3>${tituloFormatado}</h3>
-                    <p>Solicitante: ${chamado.requisitante || 'Não informado'} • Data: ${chamado.dataCriacao || ''} • Resp: ${responsavelNome}</p>
-                </div>
-                <div class="chamado-actions">
-                    <select class="status-select" data-id="${chamado.id}">
-                        <option value="pendente" ${chamado.status === 'pendente' ? 'selected' : ''}>Pendente</option>
-                        <option value="aberto" ${chamado.status === 'aberto' ? 'selected' : ''}>Aprovado</option>
-                        <option value="andamento" ${chamado.status === 'andamento' ? 'selected' : ''}>Em Andamento</option>
-                        <option value="concluido" ${chamado.status === 'concluido' ? 'selected' : ''}>Concluído</option>
-                    </select>
-                    <button onclick="excluirChamado('${chamado.id}')" class="btn-excluir"><i class="ph ph-trash"></i></button>
-                </div>
-            `;
-            listaPainel.appendChild(card);
-        });
-
-        if(badgePainel) badgePainel.textContent = `${abertos} Chamados Abertos/Pendentes`;
-        aplicarCoresSelects();
-    }
-
-    // ==========================================
-    // 6. RENDERIZAÇÃO: GESTÃO E APROVAÇÃO
+    // RENDER: GESTÃO (TABELA)
     // ==========================================
     function renderGestao() {
         const listaGestao = document.getElementById('lista-gestao');
@@ -150,75 +62,52 @@ document.addEventListener('DOMContentLoaded', () => {
         listaGestao.innerHTML = '';
         
         const chamados = getChamados();
-        // Filtra para mostrar apenas técnicos na lista de seleção
         const apenasTecnicos = equipe.filter(m => m.cargo.toLowerCase() !== 'planejador');
 
         chamados.slice().reverse().forEach(chamado => {
-            const tituloFormatado = chamado.tipoServico ? `${chamado.tipoServico.toUpperCase()}` : `Chamado #${chamado.id.substring(0,6)}`;
-            const responsavelAtual = chamado.responsavelId 
+            const titulo = chamado.tipoServico ? chamado.tipoServico.toUpperCase() : `ID: ${chamado.id.substring(0,6)}`;
+            const respNome = chamado.responsavelId 
                 ? equipe.find(e => e.id === Number(chamado.responsavelId))?.nome 
-                : '<span style="color:#D9534F; font-weight:700;">Sem responsável</span>';
+                : '<span style="color:#D9534F;">Sem técnico</span>';
             
-            const laudo = chamado.respostaTecnico || '<span style="color:#A0A0A0; font-style:italic;">Aguardando...</span>';
+            const laudo = chamado.respostaTecnico || '<span style="color:#A0A0A0;">Aguardando...</span>';
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><strong>${tituloFormatado}</strong><br><small>${chamado.dataCriacao || ''}</small></td>
+                <td><strong>${titulo}</strong><br><small>${chamado.dataCriacao || ''}</small></td>
                 <td>
-                    <select class="status-select" data-id="${chamado.id}" style="width: 100%; border:none; background:transparent; font-weight: bold;">
+                    <select class="status-select" data-id="${chamado.id}">
                         <option value="pendente" ${chamado.status === 'pendente' ? 'selected' : ''}>⏳ Pendente</option>
                         <option value="aberto" ${chamado.status === 'aberto' ? 'selected' : ''}>🟢 Aprovado</option>
                         <option value="andamento" ${chamado.status === 'andamento' ? 'selected' : ''}>🔵 Andamento</option>
                         <option value="concluido" ${chamado.status === 'concluido' ? 'selected' : ''}>✅ Concluído</option>
                     </select>
                 </td>
-                <td>${responsavelAtual}</td>
+                <td>${respNome}</td>
                 <td class="col-laudo">${laudo}</td>
                 <td>
                     <select class="select-responsavel" data-id="${chamado.id}">
-                        <option value="">Atribuir técnico...</option>
+                        <option value="">Atribuir...</option>
                         ${apenasTecnicos.map(e => `<option value="${e.id}" ${Number(chamado.responsavelId) === e.id ? 'selected' : ''}>${e.nome}</option>`).join('')}
                     </select>
                 </td>
                 <td>
-                    <button onclick="excluirChamado('${chamado.id}')" class="btn-excluir" style="padding: 8px;"><i class="ph ph-trash"></i></button>
+                    <button onclick="excluirChamado('${chamado.id}')" class="btn-excluir"><i class="ph ph-trash"></i></button>
                 </td>
             `;
             listaGestao.appendChild(tr);
         });
-
-        aplicarCoresSelects();
-
-        // Atribuição de responsável
-        document.querySelectorAll('.select-responsavel').forEach(select => {
-            select.addEventListener('change', (e) => {
-                const chamadoId = e.target.getAttribute('data-id');
-                const novoRespId = e.target.value ? parseInt(e.target.value) : null;
-                const chamadosAtualizados = getChamados();
-                const index = chamadosAtualizados.findIndex(c => String(c.id) === String(chamadoId));
-                
-                if(index !== -1) {
-                    chamadosAtualizados[index].responsavelId = novoRespId;
-                    if (novoRespId && chamadosAtualizados[index].status === 'pendente') {
-                        chamadosAtualizados[index].status = 'aberto'; // Aprova automático
-                    }
-                    saveChamados(chamadosAtualizados);
-                }
-                renderGestao(); 
-            });
-        });
+        aplicarCoresEEventos();
     }
 
     // ==========================================
-    // 7. RENDERIZAÇÃO: EQUIPE
+    // RENDER: EQUIPE
     // ==========================================
     function renderEquipe() {
-        const listaEquipe = document.getElementById('lista-equipe');
-        if (!listaEquipe) return;
-        listaEquipe.innerHTML = '';
+        const container = document.getElementById('lista-equipe');
+        if (!container) return;
+        container.innerHTML = '';
         const chamados = getChamados();
-
-        // Mostra apenas quem não é planejador
         const equipeTecnica = equipe.filter(m => m.cargo.toLowerCase() !== 'planejador');
 
         equipeTecnica.forEach(membro => {
@@ -234,176 +123,113 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <div class="equipe-tarefas">
-                    <h4>Tarefas Atribuídas (${tarefas.length}):</h4>
-                    ${tarefas.length > 0 ? tarefas.map(t => `<div class="tarefa-item ${t.status}">${t.tipoServico?.toUpperCase() || 'CHAMADO'} (${t.status})</div>`).join('') : '<p style="font-size:12px; color:#A0A0A0;">Nenhuma tarefa atribuída.</p>'}
+                    <h4>Ativas (${tarefas.filter(t => t.status !== 'concluido').length}):</h4>
+                    ${tarefas.map(t => `<div class="tarefa-item ${t.status}">${t.tipoServico?.toUpperCase() || 'CHAMADO'}</div>`).join('') || '<p>Vazio</p>'}
                 </div>
             `;
-            listaEquipe.appendChild(card);
+            container.appendChild(card);
         });
     }
 
     // ==========================================
-    // 8. RENDERIZAÇÃO: RELATÓRIOS (COM GRÁFICO PERSONALIZADO)
+    // RENDER: HISTÓRICO (NOVA TELA)
+    // ==========================================
+    function renderHistorico() {
+        const lista = document.getElementById('lista-historico');
+        const badge = document.getElementById('badge-historico');
+        if (!lista) return;
+        
+        const chamados = getChamados();
+        lista.innerHTML = '';
+        badge.textContent = `${chamados.length} Registros Totais`;
+
+        chamados.slice().reverse().forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'chamado-card';
+            card.innerHTML = `
+                <div class="chamado-info">
+                    <h3>${c.tipoServico?.toUpperCase() || 'CHAMADO'} - ${c.local || 'S/L'}</h3>
+                    <p>Requisitante: ${c.requisitante} • Status: <strong>${c.status.toUpperCase()}</strong></p>
+                    <small>Criado em: ${c.dataCriacao}</small>
+                </div>
+                <button onclick="excluirChamado('${c.id}')" class="btn-excluir"><i class="ph ph-trash"></i></button>
+            `;
+            lista.appendChild(card);
+        });
+    }
+
+    // ==========================================
+    // GRÁFICOS (RELATÓRIOS)
     // ==========================================
     function renderRelatorios() {
-        const chamadosBrutos = getChamados();
-        const mesFiltro = filtroMes ? filtroMes.value : "";
-        const diaFiltro = filtroDia ? filtroDia.value : "";
-
-        // Aplicação dos filtros de data
-        const filtrados = chamadosBrutos.filter(c => {
-            if (!c.dataCriacao) return false;
-            const dataPura = c.dataCriacao.split(' às ')[0];
-            const partesData = dataPura.split('/');
-            if (partesData.length < 3) return false;
-
-            const matchMes = mesFiltro ? (partesData[1] === mesFiltro) : true;
-            const matchDia = diaFiltro ? (partesData[0] === diaFiltro.padStart(2, '0')) : true;
-
-            return matchMes && matchDia;
-        });
-        
-        // Dados do gráfico de Status
-        const contagemStatus = { pendente: 0, aberto: 0, andamento: 0, concluido: 0 };
-        filtrados.forEach(c => {
-            if(contagemStatus[c.status] !== undefined) contagemStatus[c.status]++;
-        });
-
-        // Dados do Gráfico da Equipe (Excluindo Planejador)
-        const equipeTecnica = equipe.filter(m => m.cargo.toLowerCase() !== 'planejador');
-        const labelsEquipe = equipeTecnica.map(e => e.nome);
-        const dadosEquipe = equipeTecnica.map(e => filtrados.filter(c => Number(c.responsavelId) === e.id).length);
+        const filtrados = getChamados(); // Adicione lógica de filtro de data aqui se necessário
+        const stats = { pendente: 0, aberto: 0, andamento: 0, concluido: 0 };
+        filtrados.forEach(c => stats[c.status]++);
 
         if(chartStatus) chartStatus.destroy();
+        const ctxS = document.getElementById('graficoStatus')?.getContext('2d');
+        if(ctxS) chartStatus = new Chart(ctxS, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pendente', 'Aprovado', 'Andamento', 'Concluído'],
+                datasets: [{ data: Object.values(stats), backgroundColor: ['#F5F5F5', '#FFE0B2', '#BBDEFB', '#C8E6C9'] }]
+            }
+        });
+
+        // Gráfico Equipe
+        const tecs = equipe.filter(m => m.cargo.toLowerCase() !== 'planejador');
         if(chartEquipe) chartEquipe.destroy();
-
-        // 1. Gráfico de Rosca (Status)
-        const ctxStatus = document.getElementById('graficoStatus')?.getContext('2d');
-        if (ctxStatus) {
-            chartStatus = new Chart(ctxStatus, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Pendente', 'Aberto', 'Em Andamento', 'Concluído'],
-                    datasets: [{
-                        data: [contagemStatus.pendente, contagemStatus.aberto, contagemStatus.andamento, contagemStatus.concluido],
-                        backgroundColor: ['#F5F5F5', '#FFE0B2', '#BBDEFB', '#C8E6C9'],
-                        borderColor: ['#9E9E9E', '#E65100', '#1565C0', '#2E7D32'],
-                        borderWidth: 1
-                    }]
-                }
-            });
-        }
-
-        // 2. Gráfico de Barras Personalizado (Equipe)
-        const ctxEquipe = document.getElementById('graficoEquipe')?.getContext('2d');
-        if (ctxEquipe) {
-            chartEquipe = new Chart(ctxEquipe, {
-                type: 'bar',
-                data: {
-                    labels: labelsEquipe,
-                    datasets: [{
-                        label: 'Chamados por Técnico',
-                        data: dadosEquipe,
-                        backgroundColor: '#E68B5C',
-                        // Borda arredondada superior
-                        borderRadius: {
-                            topLeft: 5,
-                            topRight: 5,
-                            bottomLeft: 0,
-                            bottomRight: 0
-                        }
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        // TÍTULO REMOVIDO PARA EVITAR DUPLICIDADE COM O HTML
-                        title: {
-                            display: false,
-                            text: 'Carga de Trabalho por Técnico'
-                        },
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: { color: '#616161' }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { 
-                                stepSize: 1, // Pula de 1 em 1 (números inteiros para chamados)
-                                color: '#616161',
-                                font: { family: 'sans-serif' }
-                            },
-                            grid: {
-                                color: '#e0e0e0',
-                                drawBorder: false
-                            }
-                        },
-                        x: {
-                            ticks: { 
-                                color: '#616161',
-                                font: { family: 'sans-serif' }
-                            },
-                            grid: {
-                                display: false // Esconde as linhas verticais
-                            }
-                        }
-                    }
-                }
-            });
-        }
+        const ctxE = document.getElementById('graficoEquipe')?.getContext('2d');
+        if(ctxE) chartEquipe = new Chart(ctxE, {
+            type: 'bar',
+            data: {
+                labels: tecs.map(t => t.nome),
+                datasets: [{ label: 'Chamados', data: tecs.map(t => filtrados.filter(c => Number(c.responsavelId) === t.id).length), backgroundColor: '#E68B5C' }]
+            }
+        });
     }
 
-    // ==========================================
-    // 9. LÓGICA DE CORES DO SELECT
-    // ==========================================
-    function aplicarCoresSelects() {
-        const selects = document.querySelectorAll('.status-select');
-        selects.forEach(select => {
-            atualizarCorUnica(select);
-            
-            // Remove listeners duplicados clonando o elemento
-            const novoSelect = select.cloneNode(true);
-            select.parentNode.replaceChild(novoSelect, select);
-            
-            novoSelect.addEventListener('change', (e) => {
-                atualizarCorUnica(e.target);
-                
-                const chamadoId = e.target.getAttribute('data-id');
-                const chamadosAtualizados = getChamados();
-                const index = chamadosAtualizados.findIndex(c => String(c.id) === String(chamadoId));
-                
-                if(index !== -1) {
-                    chamadosAtualizados[index].status = e.target.value;
-                    saveChamados(chamadosAtualizados);
+    function aplicarCoresEEventos() {
+        document.querySelectorAll('.status-select').forEach(select => {
+            atualizarCor(select);
+            select.addEventListener('change', (e) => {
+                const id = e.target.dataset.id;
+                const chamados = getChamados();
+                const idx = chamados.findIndex(c => String(c.id) === String(id));
+                if(idx !== -1) {
+                    chamados[idx].status = e.target.value;
+                    saveChamados(chamados);
+                    atualizarCor(e.target);
                 }
-                
-                // Recarrega relatórios por trás, caso a tela esteja ativa
-                if (document.getElementById('sec-painel').classList.contains('active')) renderPainel();
-                if (document.getElementById('sec-gestao').classList.contains('active')) renderGestao();
-                if (document.getElementById('sec-relatorios').classList.contains('active')) renderRelatorios();
+            });
+        });
+
+        document.querySelectorAll('.select-responsavel').forEach(select => {
+            select.addEventListener('change', (e) => {
+                const id = e.target.dataset.id;
+                const chamados = getChamados();
+                const idx = chamados.findIndex(c => String(c.id) === String(id));
+                if(idx !== -1) {
+                    chamados[idx].responsavelId = e.target.value;
+                    if(e.target.value && chamados[idx].status === 'pendente') chamados[idx].status = 'aberto';
+                    saveChamados(chamados);
+                    renderGestao();
+                }
             });
         });
     }
 
-    function atualizarCorUnica(select) {
-        const valor = select.value;
-        if (valor === 'aberto') {
-            select.style.backgroundColor = '#FFF3E0'; select.style.color = '#E65100'; select.style.borderColor = '#FFE0B2';
-        } else if (valor === 'andamento') {
-            select.style.backgroundColor = '#E3F2FD'; select.style.color = '#1565C0'; select.style.borderColor = '#BBDEFB';
-        } else if (valor === 'concluido') {
-            select.style.backgroundColor = '#E8F5E9'; select.style.color = '#2E7D32'; select.style.borderColor = '#C8E6C9';
-        } else if (valor === 'pendente') {
-            select.style.backgroundColor = '#F5F5F5'; select.style.color = '#757575'; select.style.borderColor = '#E0E0E0';
-        }
+    function atualizarCor(el) {
+        const cores = {
+            aberto: {bg:'#FFF3E0', text:'#E65100'},
+            andamento: {bg:'#E3F2FD', text:'#1565C0'},
+            concluido: {bg:'#E8F5E9', text:'#2E7D32'},
+            pendente: {bg:'#F5F5F5', text:'#757575'}
+        };
+        const c = cores[el.value];
+        if(c) { el.style.backgroundColor = c.bg; el.style.color = c.text; }
     }
 
-    // ==========================================
-    // INICIALIZAÇÃO
-    // ==========================================
-    renderPainel();
-    renderRelatorios(); // Inicializa os gráficos no fundo para quando clicar na aba já estarem prontos
+    // Inicialização
+    renderGestao();
 });
