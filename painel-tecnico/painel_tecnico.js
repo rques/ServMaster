@@ -7,16 +7,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const saveChamados = (chamados) => localStorage.setItem('chamados', JSON.stringify(chamados));
     const getEquipe = () => JSON.parse(localStorage.getItem('equipe_servmaster')) || []; 
 
+
     // ==========================================
     // 2. GESTÃO DE SESSÃO
     // ==========================================
     const displayElement = document.getElementById("user-display");
     const matriculaTecnico = sessionStorage.getItem("matriculaTecnico");
+    const equipeAtual = getEquipe(); // Puxa a lista de funcionários cadastrados
     
     if (!matriculaTecnico) {
+        // Se não tiver logado, manda de volta pro index
         window.location.href = "../index.html"; 
-    } else if (displayElement) {
-        displayElement.textContent = "Técnico: " + matriculaTecnico;
+    } else {
+        // Procura o técnico logado dentro da equipe usando a matrícula
+        const tecnicoLogado = equipeAtual.find(e => String(e.matricula) === String(matriculaTecnico));
+        
+        if (displayElement) {
+            if (tecnicoLogado && tecnicoLogado.nome) {
+                // Se achou o técnico, exibe o nome dele
+                displayElement.textContent = tecnicoLogado.nome;
+            } else {
+                // Se por acaso não achar, exibe a matrícula como plano B
+                displayElement.textContent = "Técnico: " + matriculaTecnico;
+            }
+        }
     }
 
     const btnSair = document.getElementById("btn-sair");
@@ -97,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const descSegura = chamado.descricao || 'Sem descrição.';
             const dataSegura = chamado.dataCriacao || '';
             const tituloFormatado = `${tipoSeguro} - ${localSeguro}`;
-            
+        
             card.innerHTML = `
                 <div style="width: 100%;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -111,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <span style="font-size: 12px; font-weight: 600; color: #333;">${reqSeguro}</span>
                         </div>
                         <div>
-                            <span style="display: block; font-size: 9px; font-weight: 800; color: #A0A0A0; letter-spacing: 1px; margin-bottom: 4px;">C. DE CUSTO:</span>
+                            <span style="display: block; font-size: 9px; font-weight: 800; color: #A0A0A0; letter-spacing: 1px; margin-bottom: 4px;">Setor:</span>
                             <span style="font-size: 12px; font-weight: 600; color: #333;">${centroCustoSeguro}</span>
                         </div>
                         <div>
@@ -237,6 +251,15 @@ document.addEventListener("DOMContentLoaded", () => {
             btnEnviarChamado.textContent = "Processando...";
             btnEnviarChamado.disabled = true;
 
+            // Formatação correta da data com zeros à esquerda (DD/MM/YYYY às HH:MM)
+            const dataAtual = new Date();
+            const dia = String(dataAtual.getDate()).padStart(2, '0');
+            const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+            const ano = dataAtual.getFullYear();
+            const horas = String(dataAtual.getHours()).padStart(2, '0');
+            const minutos = String(dataAtual.getMinutes()).padStart(2, '0');
+            const dataFormatadaString = `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
+
             const novoChamado = {
                 id: Date.now().toString(), 
                 matriculaCriador: "TECNICO-" + matriculaTecnico,
@@ -252,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 responsavelId: null, 
                 respostaTecnico: '',
                 pecasUtilizadas: '',
-                dataCriacao: new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                dataCriacao: dataFormatadaString // Aplica a data forçada
             };
 
             const chamados = getChamados();

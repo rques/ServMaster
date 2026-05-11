@@ -87,6 +87,10 @@ body { font-family: 'Montserrat', Arial, sans-serif; background-color: #FAFAFA; 
 .suporte-modal-content .btn-submit { background-color: #E68B5C; color: #FFFFFF; border: none; padding: 12px 30px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: transform 0.2s, background-color 0.2s; }
 .suporte-modal-content .btn-submit:hover { background-color: #D67A49; transform: translateY(-2px); }
 
+/* Remove o sublinhado do link de logout no painel do técnico */
+.profile-section a {
+    text-decoration: none;
+}
 /* =========================================
    RESPONSIVIDADE
    ========================================= */

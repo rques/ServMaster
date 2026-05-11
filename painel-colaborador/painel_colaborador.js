@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p class="info-val">${matriculaSegura}</p>
                     </div>
                     <div class="info-col">
-                        <p class="info-lbl">C. DE CUSTO:</p>
+                        <p class="info-lbl">Setor:</p>
                         <p class="info-val">${centroCustoSeguro}</p>
                     </div>
                     <div class="info-col">
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ==========================================
-    // 5. ENVIO DO FORMULÁRIO (PADRÃO UNIVERSAL)
+    // 5. ENVIO DO FORMULÁRIO (COM DATA FORMATADA)
     // ==========================================
     const formNovo = document.getElementById("form-novo-chamado");
     if (formNovo) {
@@ -153,6 +153,15 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             const btn = document.getElementById("btn-enviar-chamado");
             btn.disabled = true;
+
+            // Formatação correta da data com zeros à esquerda (DD/MM/YYYY às HH:MM)
+            const dataAtual = new Date();
+            const dia = String(dataAtual.getDate()).padStart(2, '0');
+            const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+            const ano = dataAtual.getFullYear();
+            const horas = String(dataAtual.getHours()).padStart(2, '0');
+            const minutos = String(dataAtual.getMinutes()).padStart(2, '0');
+            const dataFormatadaString = `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
 
             const novoChamado = {
                 id: Date.now().toString(),
@@ -169,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 responsavelId: null, 
                 respostaTecnico: '',
                 pecasUtilizadas: '',
-                dataCriacao: new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                dataCriacao: dataFormatadaString // Aplica a data forçada
             };
 
             const db = getChamados();

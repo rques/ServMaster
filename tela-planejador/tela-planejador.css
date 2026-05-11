@@ -426,6 +426,11 @@ body {
     color: #555;
 }
 
+/* Remove o sublinhado do link em volta do botão de sair */
+.profile-section a {
+    text-decoration: none;
+}
+
 /* =========================================
    RESPONSIVIDADE (MOBILE & TABLET)
    ========================================= */
