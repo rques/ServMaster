@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(btnCancelar) btnCancelar.addEventListener('click', () => alternarView('lista'));
 
     // ==========================================
-    // 4. RENDERIZAÇÃO DA LISTA
+    // 4. RENDERIZAÇÃO DA LISTA (DESIGN NOVO - APENAS LEITURA)
     // ==========================================
     function renderizarLista() {
         const containerLista = document.querySelector('.chamados-list');
@@ -80,64 +80,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
         chamados.slice().reverse().forEach(chamado => {
             const card = document.createElement('div');
-            card.className = 'chamado-card-novo'; 
+            
+            // Força o estilo Inline Block (Tela Cheia) ignorando o CSS externo
+            card.style.display = 'block';
+            card.style.width = '100%';
+            card.style.boxSizing = 'border-box';
+            card.style.backgroundColor = '#ffffff';
+            card.style.padding = '25px';
+            card.style.marginBottom = '25px';
+            card.style.borderRadius = '8px';
+            card.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
+            card.style.border = '1px solid #E2E8F0';
 
             const tipoSeguro = chamado.tipoServico ? chamado.tipoServico.toUpperCase() : `CHAMADO #${chamado.id}`;
-            const idSeguro = chamado.id ? chamado.id.substring(0, 5) : '00000';
+            const localSeguro = chamado.local ? `- ${chamado.local}` : '';
             const reqSeguro = chamado.requisitante || 'Não informado';
             const urgSeguro = chamado.urgencia ? chamado.urgencia.toUpperCase() : 'NORMAL';
-            const urgClass = chamado.urgencia ? chamado.urgencia.toLowerCase() : 'baixa';
             const centroCustoSeguro = chamado.centroCusto || 'Não informado';
             const descSegura = chamado.descricao || 'Sem descrição.';
             const dataSegura = chamado.dataCriacao || '';
-            const matriculaSegura = chamado.matriculaCriador || 'Desconhecida';
-
             const statusText = chamado.status === 'andamento' ? 'Em Andamento' : chamado.status.charAt(0).toUpperCase() + chamado.status.slice(1);
             
             card.innerHTML = `
-                <div class="card-header-top">
-                    <h3 class="card-main-title">${tipoSeguro} - ${idSeguro}</h3>
-                    <span class="card-date-text">${dataSegura}</span>
+                <!-- Cabeçalho -->
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;">
+                    <h3 style="font-size: 18px; font-weight: 800; color: #111; margin: 0; text-transform: uppercase;">${tipoSeguro} ${localSeguro}</h3>
+                    <span style="font-size: 13px; color: #555;">${dataSegura}</span>
+                </div>
+                
+                <!-- Informações Básicas -->
+                <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 15px; font-size: 13px;">
+                    <div><strong style="color: #333;">REQUISITANTE:</strong> <span style="color: #555;">${reqSeguro}</span></div>
+                    <div><strong style="color: #333;">SETOR:</strong> <span style="color: #555;">${centroCustoSeguro}</span></div>
+                    <div><strong style="color: #333;">URGÊNCIA:</strong> <span style="color: ${chamado.urgencia === 'alta' ? '#DC2626' : (chamado.urgencia === 'media' ? '#EA580C' : '#64748B')}; font-weight: bold;">${urgSeguro}</span></div>
                 </div>
 
-                <div class="card-info-caixa">
-                    <div class="info-col">
-                        <p class="info-lbl">REQUISITANTE:</p>
-                        <p class="info-val">${reqSeguro}</p>
-                    </div>
-                    <div class="info-col">
-                        <p class="info-lbl">MATRÍCULA:</p>
-                        <p class="info-val">${matriculaSegura}</p>
-                    </div>
-                    <div class="info-col">
-                        <p class="info-lbl">Setor:</p>
-                        <p class="info-val">${centroCustoSeguro}</p>
-                    </div>
-                    <div class="info-col">
-                        <p class="info-lbl">URGÊNCIA:</p>
-                        <p class="info-val urg-${urgClass}">${urgSeguro}</p>
-                    </div>
+                <!-- Descrição do Problema -->
+                <div style="margin-bottom: 25px;">
+                    <strong style="font-size: 13px; color: #111; display: block; margin-bottom: 5px;">DESCRIÇÃO DO PROBLEMA:</strong>
+                    <div style="font-size: 14px; color: #444; line-height: 1.5;">${descSegura}</div>
                 </div>
 
-                <div>
-                    <p class="info-lbl">DESCRIÇÃO DO PROBLEMA:</p>
-                    <p class="desc-texto">${descSegura}</p>
-                </div>
-
-                <hr class="card-divisor">
-
-                <div class="card-footer-section">
-                    <h4 class="tecnico-title"><i class="fa-solid fa-wrench"></i> RETORNO TÉCNICO</h4>
-                    <div style="margin-bottom: 16px; max-width: 250px;">
-                        <p class="info-lbl">STATUS ATUAL:</p>
-                        <div class="readonly-box style-status-${chamado.status}">${statusText}</div>
+                <!-- Bloco do Relatório Técnico (Apenas Leitura para o Colaborador) -->
+                <div style="background-color: #F8F9FA; border: 1px solid #E5E7EB; border-radius: 6px; padding: 20px; box-sizing: border-box; width: 100%;">
+                    <h4 style="font-size: 14px; color: #B45309; margin-top: 0; margin-bottom: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-wrench"></i> RELATÓRIO TÉCNICO
+                    </h4>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-size: 12px; font-weight: 800; color: #111; display: block; margin-bottom: 6px;">STATUS DO CHAMADO:</label>
+                        <input type="text" value="${statusText}" disabled style="width: 100%; padding: 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 14px; background-color: #F1F5F9; color: #334155; font-weight: 700; box-sizing: border-box; cursor: not-allowed; outline: none;">
                     </div>
-                    <div>
-                        <p class="info-lbl">OBSERVAÇÕES / LAUDO TÉCNICO:</p>
-                        <div class="readonly-box-large ${!chamado.respostaTecnico ? 'txt-muted' : ''}">
-                            ${chamado.respostaTecnico || 'Aguardando avaliação do técnico...'}
-                        </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-size: 12px; font-weight: 800; color: #111; display: block; margin-bottom: 6px;">LISTA DE PEÇAS E MATERIAIS UTILIZADOS:</label>
+                        <input type="text" value="${chamado.pecasUtilizadas || ''}" placeholder="Nenhuma peça registrada até o momento." disabled style="width: 100%; padding: 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 14px; background-color: #F1F5F9; color: #334155; box-sizing: border-box; cursor: not-allowed; outline: none;">
                     </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <label style="font-size: 12px; font-weight: 800; color: #111; display: block; margin-bottom: 6px;">LAUDO DE MANUTENÇÃO DETALHADO / OBSERVAÇÕES:</label>
+                        <textarea rows="3" placeholder="Aguardando avaliação/retorno do técnico..." disabled style="width: 100%; padding: 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 14px; background-color: #F1F5F9; color: #334155; box-sizing: border-box; resize: vertical; font-family: inherit; cursor: not-allowed; outline: none;">${chamado.respostaTecnico || ''}</textarea>
+                    </div>
+                    
+                    ${chamado.status === 'concluido' ? `
+                    <div style="display: flex; justify-content: center; margin-top: 20px;">
+                        <span style="color: #15803D; font-weight: 800; font-size: 14px; background: #DCFCE7; padding: 10px 20px; border-radius: 6px; border: 1px solid #BBF7D0;"><i class="fa-solid fa-lock"></i> CHAMADO CONCLUÍDO E BLOQUEADO</span>
+                    </div>
+                    ` : ''}
                 </div>
             `;
             containerLista.appendChild(card);
