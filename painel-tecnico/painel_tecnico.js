@@ -81,6 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const tecnicoLogado = equipe.find(e => String(e.matricula) === String(matriculaTecnico));
         const idDoTecnico = tecnicoLogado ? tecnicoLogado.id : matriculaTecnico;
 
+        // LÓGICA ATUALIZADA: O chamado só aparece se o Planejador atribuiu o responsavelId ao técnico logado
+        // Chamados recém-criados estarão com status 'pendente' e responsavelId null, logo não aparecerão aqui.
         chamados = chamados.filter(c => String(c.responsavelId) === String(idDoTecnico) && c.status !== 'pendente');
 
         const chamadosAbertos = chamados.filter(c => c.status !== 'concluido').length;
@@ -95,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = document.createElement('div');
             card.className = 'chamado-card';
             
-            // CSS INLINE ESTRITO: Força o display: block para não herdar colunas do seu arquivo CSS
             card.style.display = 'block';
             card.style.width = '100%';
             card.style.boxSizing = 'border-box';
@@ -122,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <span style="font-size: 13px; color: #555;">${dataSegura}</span>
                 </div>
                 
-                <!-- Informações Básicas (Requisitante, Setor, Urgência) -->
+                <!-- Informações Básicas -->
                 <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 15px; font-size: 13px;">
                     <div><strong style="color: #333;">REQUISITANTE:</strong> <span style="color: #555;">${reqSeguro}</span></div>
                     <div><strong style="color: #333;">SETOR:</strong> <span style="color: #555;">${centroCustoSeguro}</span></div>
@@ -281,10 +282,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 matriculaCriador: matriculaTecnico,
                 requisitante: document.getElementById('requisitante')?.value || 'Não informado',
                 centroCusto: document.getElementById('centro-custo')?.value || 'Não informado',
-                tipoServico: document.getElementById('tipo-servico')?.value || 'Manutenção Geral',
+                tipoServico: document.getElementById('tipo-tecnico')?.value || 'Manutenção Geral',
                 urgencia: document.getElementById('urgencia')?.value || 'normal',
                 local: document.getElementById('local')?.value || 'Não informado',
                 descricao: document.getElementById('descricao')?.value || '',
+                // Nasce pendente e sem técnico, aguardando o planejamento atuar
                 status: 'pendente',
                 responsavelId: null,
                 respostaTecnico: '',
@@ -300,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 formNovoChamado.reset();
                 btnEnviarChamado.textContent = "Abrir Requisição";
                 btnEnviarChamado.disabled = false;
-                alert("Requisição enviada! Aguardando aprovação do Planejador.");
+                alert("Requisição enviada! O chamado foi encaminhado para a fila de Planejamento e Distribuição.");
                 alternarView('lista');
             }, 500);
         });
